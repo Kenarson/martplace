@@ -4,7 +4,7 @@ export default function Navbar() {
   return (
     <nav className="flex justify-between items-center p-4 bg-white shadow-sm">
       <div className="logo">
-        <Link href="/" className="text-xl font-bold text-gray-800 no-underline">Marketplace</Link>
+        <Link href="/" className="text-xl font-bold text-gray-800 no-underline">Martplace</Link>
       </div>
       
       <div className="flex gap-2">
