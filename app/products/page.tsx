@@ -1,109 +1,97 @@
-import Navbar from "../components/navbar";
-export default function ProductPage({
-  params
-}: {
-  params: { id: string }
-}) {
-  const product = {
-    id: params.id,
-    title: 'Premium Wireless Headphones',
-    price: 199.99,
-    description: 'Experience crystal-clear sound with our premium wireless headphones featuring noise cancellation and 30-hour battery life.',
-    rating: 4.8,
-    reviewCount: 125,
-    seller: 'AudioTech',
-    inStock: true,
-    colors: ['Black', 'Silver', 'Blue'],
-    features: [
-      'Active Noise Cancellation',
-      '30-hour battery life',
-      'Bluetooth 5.0',
-      'Built-in microphone',
-      'Touch controls'
-    ],
-    images: [
-      '/headphones-main.jpg',
-      '/headphones-side.jpg',
-      '/headphones-case.jpg'
-    ]
-  };
+import Link from 'next/link';
+
+export default function ProductsPage() {
+  const products = [
+    {
+      id: '1',
+      title: 'Wireless Headphones',
+      price: 199.99,
+      rating: 4.8,
+      reviewCount: 125,
+      image: '/headphones.jpg',
+      seller: 'AudioTech'
+    },
+    {
+      id: '2',
+      title: 'Smart Watch Pro',
+      price: 249.99,
+      rating: 4.6,
+      reviewCount: 89,
+      image: '/smartwatch.jpg',
+      seller: 'TechGadgets'
+    },
+    {
+      id: '3',
+      title: 'Bluetooth Speaker',
+      price: 129.99,
+      rating: 4.5,
+      reviewCount: 64,
+      image: '/speaker.jpg',
+      seller: 'SoundMaster'
+    },
+    {
+      id: '4',
+      title: '4K Action Camera',
+      price: 179.99,
+      rating: 4.7,
+      reviewCount: 112,
+      image: '/camera.jpg',
+      seller: 'ActionCam'
+    },
+    {
+      id: '5',
+      title: 'Ergonomic Keyboard',
+      price: 89.99,
+      rating: 4.4,
+      reviewCount: 47,
+      image: '/keyboard.jpg',
+      seller: 'PeripheralsPro'
+    },
+    {
+      id: '6',
+      title: 'Wireless Mouse',
+      price: 49.99,
+      rating: 4.3,
+      reviewCount: 38,
+      image: '/mouse.jpg',
+      seller: 'PeripheralsPro'
+    }
+  ];
 
   return (
-    <>
-    <Navbar />
     <div className="container mx-auto px-4 py-8">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Product Images */}
-        <div className="space-y-4">
-          <div className="bg-gray-100 rounded-lg p-4">
-            <img 
-              src={product.images[0]} 
-              alt={product.title}
-              className="w-full h-auto rounded"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {product.images.map((img, i) => (
-              <div key={i} className="bg-gray-100 rounded p-2 cursor-pointer">
-                <img src={img} alt={`${product.title} view ${i+1}`} className="w-full h-auto" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Details */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-          <div className="flex items-center mb-4">
-            <div className="flex text-yellow-400 mr-2">
-              {[...Array(5)].map((_, i) => (
-                <span key={i}>{i < Math.floor(product.rating) ? '★' : '☆'}</span>
-              ))}
-            </div>
-            <span className="text-gray-600">{product.rating} ({product.reviewCount} reviews)</span>
-          </div>
-          
-          <p className="text-2xl font-bold mb-4">${product.price.toFixed(2)}</p>
-          
-          <p className="text-gray-700 mb-6">{product.description}</p>
-          
-          <div className="mb-6">
-            <h3 className="font-semibold mb-2">Available Colors:</h3>
-            <div className="flex space-x-2">
-              {product.colors.map(color => (
-                <div 
-                  key={color} 
-                  className="w-8 h-8 rounded-full border border-gray-300"
-                  style={{ backgroundColor: color.toLowerCase() }}
-                  title={color}
+      <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <Link 
+            key={product.id} 
+            href={`/products/${product.id}`}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+          >
+            <div className="p-4">
+              <div className="bg-gray-100 rounded-lg aspect-square mb-4 overflow-hidden">
+                <img 
+                  src={product.image} 
+                  alt={product.title}
+                  className="w-full h-full object-cover"
                 />
-              ))}
+              </div>
+              <h2 className="text-lg font-semibold mb-1">{product.title}</h2>
+              <div className="flex items-center mb-2">
+                <div className="flex text-yellow-400 mr-1">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < Math.floor(product.rating) ? '★' : '☆'}</span>
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600">({product.reviewCount})</span>
+              </div>
+              <p className="text-xl font-bold mb-1">${product.price.toFixed(2)}</p>
+              <p className="text-sm text-gray-500">Sold by: {product.seller}</p>
             </div>
-          </div>
-          
-          <div className="mb-6">
-            <h3 className="font-semibold mb-2">Features:</h3>
-            <ul className="list-disc pl-5">
-              {product.features.map((feature, i) => (
-                <li key={i}>{feature}</li>
-              ))}
-            </ul>
-          </div>
-          
-          <div className="flex space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium">
-              Add to Cart
-            </button>
-            <button className="border border-gray-300 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium">
-              Add to Wishlist
-            </button>
-          </div>
-          
-          <div className="mt-6 text-sm text-gray-500">
-            Sold by: {product.seller} | {product.inStock ? 'In Stock' : 'Out of Stock'}
-          </div>
-        </div>
+          </Link>
+        ))}
       </div>
-    </div> </>
+    </div>
   );
 }
