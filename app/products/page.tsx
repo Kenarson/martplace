@@ -1,62 +1,63 @@
+'use client';
+
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  rating: number;
+  reviewCount: number;
+  image: string;
+  seller: string;
+  description?: string;
+}
 
 export default function ProductsPage() {
-  const products = [
-    {
-      id: '1',
-      title: 'Wireless Headphones',
-      price: 199.99,
-      rating: 4.8,
-      reviewCount: 125,
-      image: '/headphones.jpg',
-      seller: 'AudioTech'
-    },
-    {
-      id: '2',
-      title: 'Smart Watch Pro',
-      price: 249.99,
-      rating: 4.6,
-      reviewCount: 89,
-      image: '/smartwatch.jpg',
-      seller: 'TechGadgets'
-    },
-    {
-      id: '3',
-      title: 'Bluetooth Speaker',
-      price: 129.99,
-      rating: 4.5,
-      reviewCount: 64,
-      image: '/speaker.jpg',
-      seller: 'SoundMaster'
-    },
-    {
-      id: '4',
-      title: '4K Action Camera',
-      price: 179.99,
-      rating: 4.7,
-      reviewCount: 112,
-      image: '/camera.jpg',
-      seller: 'ActionCam'
-    },
-    {
-      id: '5',
-      title: 'Ergonomic Keyboard',
-      price: 89.99,
-      rating: 4.4,
-      reviewCount: 47,
-      image: '/keyboard.jpg',
-      seller: 'PeripheralsPro'
-    },
-    {
-      id: '6',
-      title: 'Wireless Mouse',
-      price: 49.99,
-      rating: 4.3,
-      reviewCount: 38,
-      image: '/mouse.jpg',
-      seller: 'PeripheralsPro'
-    }
-  ];
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/data/products.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setProducts(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+        <p className="text-center text-gray-600">Loading products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+        <p className="text-center text-red-600">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
