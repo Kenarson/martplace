@@ -1,6 +1,20 @@
 import Link from 'next/link';
 
+import { useState, useEffect } from 'react';
+
 export default function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    // Check if user is logged in from localStorage
+    const user = localStorage.getItem('user');
+    if (user) {
+      setIsLoggedIn(true);
+      setUserName(JSON.parse(user).name);
+    }
+  }, []);
+
   return (
     <nav className="flex justify-between items-center p-4 bg-white shadow-sm">
       <div className="logo">
@@ -20,7 +34,14 @@ export default function Navbar() {
         <Link href="/products" className="text-gray-800 no-underline font-medium hover:text-blue-600">Products</Link>
         <Link href="/categories" className="text-gray-800 no-underline font-medium hover:text-blue-600">Categories</Link>
         <Link href="/sell" className="text-gray-800 no-underline font-medium hover:text-blue-600">Sell</Link>
-        <Link href="/account" className="text-gray-800 no-underline font-medium hover:text-blue-600">Account</Link>
+        {isLoggedIn ? (
+          <>
+            <span className="text-gray-800 font-medium">Welcome, {userName}</span>
+            <Link href="/account" className="text-gray-800 no-underline font-medium hover:text-blue-600">Account</Link>
+          </>
+        ) : (
+          <Link href="/account" className="text-gray-800 no-underline font-medium hover:text-blue-600">Login</Link>
+        )}
         <Link href="/cart" className="text-gray-800 no-underline font-medium hover:text-blue-600">Cart (0)</Link>
       </div>
     </nav>

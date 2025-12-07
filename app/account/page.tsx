@@ -3,16 +3,62 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+
 export default function AccountPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log({ email, password, name });
+    
+    try {
+      if (isLogin) {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+        
+        const { user } = await response.json();
+        console.log('User logged in:', user);
+        localStorage.setItem('user', JSON.stringify(user));
+        alert('Login successful!');
+        window.location.href = '/';
+      } else {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
+        
+        const data = await response.json();
+        console.log('User created:', data);
+        alert('Registration successful! Please login.');
+        setIsLogin(true); // Switch to login form after successful registration
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      const errorMessage = error instanceof Error ? 
+        error.message.includes('Invalid credentials') ? 
+          'Invalid email or password' :
+          error.message.includes('ER_') ?
+            'Database error' :
+            error.message : 
+        'Authentication failed';
+      alert(errorMessage);
+    }
   };
 
   return (
