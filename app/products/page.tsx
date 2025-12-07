@@ -23,7 +23,7 @@ export default function ProductsPage() {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/data/products.json');
+        const response = await fetch('/api/products');
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
